@@ -1,0 +1,8 @@
+
+FUNCAO soma(a,b),: a+b ;
+FUNCAO soma2(c) :
+	c = c+1 ;
+	c+1 ;
+FIM
+seis = soma(4,2);
+oito = soma2(seis);

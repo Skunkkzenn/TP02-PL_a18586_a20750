@@ -1,0 +1,4 @@
+
+FUNCAO somatorio( [] ),: 0 ;
+FUNCAO somatorio( x:xs ),: x + somatorio(xs) ;
+resultado = somatorio([1,2,3]);
