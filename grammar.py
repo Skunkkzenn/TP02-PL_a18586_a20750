@@ -34,15 +34,13 @@ def p_statement(p):
 
 def p_assignment_statement(p):
     '''assignment_statement : VARIABLE EQUALS expression SEMICOLON
-                             | VARIABLE LPAREN expression RPAREN SEMICOLON
-                             | VARIABLE COLON EQUALS expression SEMICOLON
-                             | ESCREVER LPAREN expression RPAREN SEMICOLON'''
-    if len(p) == 5 or len(p) == 6:
-        variables[p[1]] = p[3]
+                            | VARIABLE COLON_EQUALS expression SEMICOLON'''
+    variables[p[1]] = p[3]
     p[0] = p[3]
 
 def p_print_statement(p):
-    '''print_statement : ESCREVER LPAREN expression RPAREN'''
+    '''print_statement : ESCREVER LPAREN expression RPAREN
+                       | ESCREVER LPAREN expression RPAREN SEMICOLON'''
     print(p[3])
     p[0] = None
 
@@ -60,14 +58,19 @@ def p_expression_binop(p):
                   | expression CONCAT expression'''
     if p[2] == '+':
         p[0] = p[1] + p[3]
+        # print("Resultado da operação soma:", p[0])
     elif p[2] == '-':
         p[0] = p[1] - p[3]
+        # print("Resultado da operação subtração:", p[0])
     elif p[2] == '*':
         p[0] = p[1] * p[3]
+        # print("Resultado da operação multiplicação:", p[0])
     elif p[2] == '/':
         p[0] = p[1] // p[3]
+        # print("Resultado da operação divisão:", p[0])
     elif p[2] == '<>':
         p[0] = str(p[1]) + str(p[3])
+        # print("Resultado da operação concatenação:", p[0])
 
 def p_expression_group(p):
     'expression : LPAREN expression RPAREN'
