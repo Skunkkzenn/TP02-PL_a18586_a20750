@@ -1,0 +1,7 @@
+
+FUNCAO mais2( x ),: x + 2 ;
+FUNCAO soma( a, b ),: a + b ;
+lista1 = map( mais2, [] ); 		
+lista2 = map( mais2, [ 1, 2, 3 ] );  	
+lista3 = fold( soma, [ 1, 2, 3 ], 0 ); 
+			

@@ -1,9 +1,9 @@
+# lexer.py
 import ply.lex as lex
-import ply.yacc as yacc
 
 # Lista de tokens
 tokens = [
-    'PRINT',         # print
+    'ESCREVER',         # print
     'READ',          # read
     'NUMERO',        # números
     'STRING',        # strings
@@ -15,8 +15,12 @@ tokens = [
     'TIMES',         # *
     'DIVIDE',        # /
     'SEMICOLON',     # ;
-    'ASSIGNMENT',    # :=
     'CONCAT',        # <>
+    'EQUALS',        # =
+    'OPEN_BRACE',    # {
+    'CLOSE_BRACE',   # }
+    'COMMA',         # ,
+    'COLON'          # :
 ]
 
 # Ignorar espaços em branco e tabulações
@@ -30,11 +34,15 @@ t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIVIDE = r'/'
 t_SEMICOLON = r';'
-t_ASSIGNMENT = r':='
 t_CONCAT = r'<>'
+t_EQUALS = r'='
+t_OPEN_BRACE = r'{'
+t_CLOSE_BRACE = r'}'
+t_COMMA = r','
+t_COLON = r':'
 
-def t_PRINT(t):
-    r'PRINT'
+def t_ESCREVER(t):
+    r'ESCREVER'
     return t
 
 def t_READ(t):
@@ -70,18 +78,24 @@ def print_tokens(code):
     for token in lexer:
         print(token)
 
-# Teste para imprimir tokens
-code = '''
-tmp_01 := 2*3+4 ;
-a1_ := 12345 - (5191 * 15) ;
-idade_valida? := 1;
-mult_3! := a1_ * 3 ;
-'''
-print("Tokens:")
-print_tokens(code)
-print("\nParsing and Execution:\n")
+if __name__ == '__main__':
+    # Teste para imprimir tokens
+    code = '''
+    tmp_01 := 2*3+4 ;
+    a1_ := 12345 - (5191 * 15) ;
+    idade_valida? := 1;
+    mult_3! := a1_ * 3 ;
+    '''
+    print("Tokens:")
+    print_tokens(code)
 
-# Regras de parsing
+
+
+    #grammar.py
+import ply.yacc as yacc
+from lexer import tokens
+
+# Variáveis para armazenar valores
 variables = {}
 
 # Precedência e associatividade dos operadores
@@ -105,33 +119,32 @@ def p_statements_single(p):
     'statements : statement'
     p[0] = [p[1]]
 
-# Regra para statement
 def p_statement(p):
     '''statement : assignment_statement
                  | print_statement
                  | read_statement'''
     p[0] = p[1]
 
-# Regra para atribuição
 def p_assignment_statement(p):
-    '''assignment_statement : VARIABLE EQUAL expression SEMICOLON'''
-    variables[p[1]] = p[3]
+    '''assignment_statement : VARIABLE EQUALS expression SEMICOLON
+                             | VARIABLE LPAREN expression RPAREN SEMICOLON
+                             | VARIABLE COLON EQUALS expression SEMICOLON
+                             | ESCREVER LPAREN expression RPAREN SEMICOLON'''
+    if len(p) == 5 or len(p) == 6:
+        variables[p[1]] = p[3]
     p[0] = p[3]
 
-# Regra para print
 def p_print_statement(p):
-    '''print_statement : PRINT LPAREN expression RPAREN SEMICOLON'''
+    '''print_statement : ESCREVER LPAREN expression RPAREN'''
     print(p[3])
     p[0] = None
 
-# Regra para leitura
 def p_read_statement(p):
     '''read_statement : READ LPAREN VARIABLE RPAREN SEMICOLON'''
     input_value = input("Insira um valor para %s: " % p[3])
     variables[p[3]] = int(input_value)
     p[0] = None
 
-# Regra para expressão
 def p_expression_binop(p):
     '''expression : expression PLUS expression
                   | expression MINUS expression
@@ -165,48 +178,24 @@ def p_expression_variable(p):
     'expression : VARIABLE'
     p[0] = variables.get(p[1], 0)
 
-# Regra para tratamento de erro
 def p_error(p):
     print("Erro de sintaxe.")
 
 # Construção do parser
 parser = yacc.yacc()
 
-# Função para execução do código
-def run(code):
+def parse_code(code):
     parser.parse(code)
     return variables
 
-# Teste de execução do código
-code = '''
-tmp_01 := 2*3+4 ;
-a1_ := 12345 - (5191 * 15) ;
-idade_valida? := 1;
-mult_3! := a1_ * 3 ;
-PRINT(mult_3!);
-'''
-result = run(code)
-print("Finish variables:", variables)
-
-# Função principal para execução com arquivo de entrada
-def main():
-    import sys
-    if len(sys.argv) > 1:
-        with open(sys.argv[1], 'r') as file:
-            data = file.read()
-        run(data)
-        print("Finish variables:", variables)
-    else:
-        data = ""
-        print("Isert commands in terminal (finish with CTRL+Z and press enter.):")
-        while True:
-            try:
-                line = input()
-            except EOFError:
-                break
-            data += line + '\n'
-        run(data)
-        print("Variáveis finais:", variables)
-
 if __name__ == '__main__':
-    main()
+    # Teste de execução do código
+    code = '''
+    tmp_01 := 2*3+4 ;
+    a1_ := 12345 - (5191 * 15) ;
+    idade_valida? := 1;
+    mult_3! := a1_ * 3 ;
+    PRINT(mult_3!);
+    '''
+    result = parse_code(code)
+    print("Variáveis finais:", variables)

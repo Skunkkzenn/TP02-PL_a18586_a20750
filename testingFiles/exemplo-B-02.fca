@@ -1,0 +1,5 @@
+{- exemplo interpolação de strings
+   Olá, EST IPCA! -}
+escola ="EST";
+inst = "IPCA";
+ESCREVER ("Olá, #{escola} #{inst}!");
