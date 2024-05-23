@@ -1,4 +1,4 @@
-#grammar.py
+# grammar.py
 import ply.yacc as yacc
 from lexer import tokens
 
@@ -41,8 +41,19 @@ def p_assignment_statement(p):
 def p_print_statement(p):
     '''print_statement : ESCREVER LPAREN expression RPAREN
                        | ESCREVER LPAREN expression RPAREN SEMICOLON'''
-    print(p[3])
+    # Realiza a interpolação de strings
+    if isinstance(p[3], str):
+        output = interpolate_string(p[3])
+    else:
+        output = p[3]
+    print(output)
     p[0] = None
+
+def interpolate_string(s):
+    # Substitui as variáveis no formato #{var} pelo valor correspondente
+    import re
+    pattern = re.compile(r'#\{(\w+)\}')
+    return pattern.sub(lambda match: str(variables.get(match.group(1), match.group(0))), s)
 
 def p_read_statement(p):
     '''read_statement : READ LPAREN VARIABLE RPAREN SEMICOLON'''
@@ -58,19 +69,14 @@ def p_expression_binop(p):
                   | expression CONCAT expression'''
     if p[2] == '+':
         p[0] = p[1] + p[3]
-        # print("Resultado da operação soma:", p[0])
     elif p[2] == '-':
         p[0] = p[1] - p[3]
-        # print("Resultado da operação subtração:", p[0])
     elif p[2] == '*':
         p[0] = p[1] * p[3]
-        # print("Resultado da operação multiplicação:", p[0])
     elif p[2] == '/':
         p[0] = p[1] // p[3]
-        # print("Resultado da operação divisão:", p[0])
     elif p[2] == '<>':
         p[0] = str(p[1]) + str(p[3])
-        # print("Resultado da operação concatenação:", p[0])
 
 def p_expression_group(p):
     'expression : LPAREN expression RPAREN'
@@ -101,11 +107,9 @@ def parse_code(code):
 if __name__ == '__main__':
     # Teste de execução do código
     code = '''
-    tmp_01 := 2*3+4 ;
-    a1_ := 12345 - (5191 * 15) ;
-    idade_valida? := 1;
-    mult_3! := a1_ * 3 ;
-    PRINT(mult_3!);
+    escola := "EST";
+    inst := "IPCA";
+    ESCREVER ("Olá, #{escola} #{inst}!");
     '''
     result = parse_code(code)
     print("Variáveis finais:", variables)
