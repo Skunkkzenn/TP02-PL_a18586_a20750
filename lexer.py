@@ -22,7 +22,9 @@ tokens = [
     'OPEN_BRACE',    # {
     'CLOSE_BRACE',   # }
     'COMMA',         # ,
-    'COLON'          # :
+    'COLON',         # :
+    'ENTRADA',       # input
+    'ALEATORIO'      # random
 ]
 
 # Ignorar espaços em branco e tabulações
@@ -70,6 +72,11 @@ def t_VARIABLE(t):
 # Regra para comentários
 def t_COMMENT(t):
     r'\-\-.*'
+    pass  # Ignorar o comentário
+
+# Regra para comentários de múltiplas linhas
+def t_multiline_comment(t):
+    r'\{\-([^{}]*|(\{[^{}]*\}))*\-\}'
     pass  # Ignorar o comentário
 
 # Regra de tratamento de erro
