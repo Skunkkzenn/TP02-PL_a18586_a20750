@@ -20,7 +20,23 @@ virtualenv 'name_u_folder'
 Activate the virtual environment:
 .\'name_u_folder'\Scripts\activate
 ```
-
-
-
 Executing commands:
+```sh
+py .\master.py .\testingFiles\exemplo-A-01.fca
+Result: Variáveis finais: {'tmp_01': 10, 'a1_': -65520, 'idade_valida?': 1, 'mult_3!': -196560}
+
+py .\master.py .\testingFiles\exemplo-B-01.fca
+Result:
+0
+730
+Ola Mundo
+Olá, ESI
+Variáveis finais: {'curso': 'ESI'}
+
+py .\master.py .\testingFiles\exemplo-B-02.fca
+Result: Olá, EST IPCA!
+Variáveis finais: {'escola': 'EST', 'inst': 'IPCA'}
+
+
+```
+
