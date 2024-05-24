@@ -19,4 +19,8 @@ virtualenv 'name_u_folder'
 
 Activate the virtual environment:
 .\'name_u_folder'\Scripts\activate
+```
 
+
+
+Executing commands:
