@@ -12,10 +12,9 @@ pip install virtualenv
 pip install ply
 pip install py-yacc
 
-Select one name for u folder: virtualenv 'name_u_folder' 
+Select one name for u folder:
+virtualenv 'name_u_folder' 
 Activate the venv: .\'name_u_folder'\Scripts\activate
-Select a name for your folder:
-virtualenv 'name_u_folder'
 
 Activate the virtual environment:
 .\'name_u_folder'\Scripts\activate
