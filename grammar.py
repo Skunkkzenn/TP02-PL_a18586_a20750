@@ -1,6 +1,7 @@
 # grammar.py
 import ply.yacc as yacc
 from lexer import tokens
+import random
 
 # Variáveis para armazenar valores
 variables = {}
@@ -34,9 +35,20 @@ def p_statement(p):
 
 def p_assignment_statement(p):
     '''assignment_statement : VARIABLE EQUALS expression SEMICOLON
-                            | VARIABLE COLON_EQUALS expression SEMICOLON'''
-    variables[p[1]] = p[3]
-    p[0] = p[3]
+                            | VARIABLE COLON_EQUALS expression SEMICOLON
+                            | VARIABLE EQUALS ENTRADA LPAREN RPAREN SEMICOLON
+                            | VARIABLE EQUALS ALEATORIO LPAREN NUMERO RPAREN SEMICOLON'''
+    if len(p) == 5 and p[3] == 'ENTRADA':
+        p[0] = input("Insira um valor: ")
+        variables[p[1]] = p[0]
+    elif len(p) == 7 and p[3] == 'ALEATORIO':
+        p[0] = random.randint(0, p[6])
+        variables[p[1]] = p[0]
+    else:
+        variables[p[1]] = p[3]
+        p[0] = p[3]
+
+
 
 def p_print_statement(p):
     '''print_statement : ESCREVER LPAREN expression RPAREN
@@ -95,7 +107,10 @@ def p_expression_variable(p):
     p[0] = variables.get(p[1], 0)
 
 def p_error(p):
-    print("Erro de sintaxe.")
+    if p:
+        print("Erro de sintaxe em '%s'" % p.value)
+    else:
+        print("Erro de sintaxe no final da entrada")
 
 # Construção do parser
 parser = yacc.yacc()

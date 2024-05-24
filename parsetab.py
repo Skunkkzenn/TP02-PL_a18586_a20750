@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftPLUSMINUSleftTIMESDIVIDEleftCONCATCLOSE_BRACE COLON COLON_EQUALS COMMA CONCAT DIVIDE EQUALS ESCREVER LPAREN MINUS NUMERO OPEN_BRACE PLUS READ RPAREN SEMICOLON STRING TIMES VARIABLEprogram : statementsstatements : statements statementstatements : statementstatement : assignment_statement\n                 | print_statement\n                 | read_statementassignment_statement : VARIABLE EQUALS expression SEMICOLON\n                            | VARIABLE COLON_EQUALS expression SEMICOLONprint_statement : ESCREVER LPAREN expression RPAREN\n                       | ESCREVER LPAREN expression RPAREN SEMICOLONread_statement : READ LPAREN VARIABLE RPAREN SEMICOLONexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | expression TIMES expression\n                  | expression DIVIDE expression\n                  | expression CONCAT expressionexpression : LPAREN expression RPARENexpression : NUMEROexpression : STRINGexpression : VARIABLE'
+_lr_signature = 'leftPLUSMINUSleftTIMESDIVIDEleftCONCATALEATORIO CLOSE_BRACE COLON COLON_EQUALS COMMA CONCAT DIVIDE ENTRADA EQUALS ESCREVER LPAREN MINUS NUMERO OPEN_BRACE PLUS READ RPAREN SEMICOLON STRING TIMES VARIABLEprogram : statementsstatements : statements statementstatements : statementstatement : assignment_statement\n                 | print_statement\n                 | read_statementassignment_statement : VARIABLE EQUALS expression SEMICOLON\n                            | VARIABLE COLON_EQUALS expression SEMICOLON\n                            | VARIABLE EQUALS ENTRADA LPAREN RPAREN SEMICOLON\n                            | VARIABLE EQUALS ALEATORIO LPAREN NUMERO RPAREN SEMICOLONprint_statement : ESCREVER LPAREN expression RPAREN\n                       | ESCREVER LPAREN expression RPAREN SEMICOLONread_statement : READ LPAREN VARIABLE RPAREN SEMICOLONexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | expression TIMES expression\n                  | expression DIVIDE expression\n                  | expression CONCAT expressionexpression : LPAREN expression RPARENexpression : NUMEROexpression : STRINGexpression : VARIABLE'
     
-_lr_action_items = {'VARIABLE':([0,2,3,4,5,6,10,11,12,13,14,17,23,24,25,26,27,28,30,31,39,40,],[7,7,-3,-4,-5,-6,-2,15,15,15,22,15,-7,15,15,15,15,15,-8,-9,-10,-11,]),'ESCREVER':([0,2,3,4,5,6,10,23,30,31,39,40,],[8,8,-3,-4,-5,-6,-2,-7,-8,-9,-10,-11,]),'READ':([0,2,3,4,5,6,10,23,30,31,39,40,],[9,9,-3,-4,-5,-6,-2,-7,-8,-9,-10,-11,]),'$end':([1,2,3,4,5,6,10,23,30,31,39,40,],[0,-1,-3,-4,-5,-6,-2,-7,-8,-9,-10,-11,]),'EQUALS':([7,],[11,]),'COLON_EQUALS':([7,],[12,]),'LPAREN':([8,9,11,12,13,17,24,25,26,27,28,],[13,14,17,17,17,17,17,17,17,17,17,]),'NUMERO':([11,12,13,17,24,25,26,27,28,],[18,18,18,18,18,18,18,18,18,]),'STRING':([11,12,13,17,24,25,26,27,28,],[19,19,19,19,19,19,19,19,19,]),'SEMICOLON':([15,16,18,19,20,31,32,33,34,35,36,37,38,],[-20,23,-18,-19,30,39,40,-12,-13,-14,-15,-16,-17,]),'PLUS':([15,16,18,19,20,21,29,33,34,35,36,37,38,],[-20,24,-18,-19,24,24,24,-12,-13,-14,-15,-16,-17,]),'MINUS':([15,16,18,19,20,21,29,33,34,35,36,37,38,],[-20,25,-18,-19,25,25,25,-12,-13,-14,-15,-16,-17,]),'TIMES':([15,16,18,19,20,21,29,33,34,35,36,37,38,],[-20,26,-18,-19,26,26,26,26,26,-14,-15,-16,-17,]),'DIVIDE':([15,16,18,19,20,21,29,33,34,35,36,37,38,],[-20,27,-18,-19,27,27,27,27,27,-14,-15,-16,-17,]),'CONCAT':([15,16,18,19,20,21,29,33,34,35,36,37,38,],[-20,28,-18,-19,28,28,28,28,28,28,28,-16,-17,]),'RPAREN':([15,18,19,21,22,29,33,34,35,36,37,38,],[-20,-18,-19,31,32,38,-12,-13,-14,-15,-16,-17,]),}
+_lr_action_items = {'VARIABLE':([0,2,3,4,5,6,10,11,12,13,14,18,25,26,27,28,29,30,34,35,45,46,47,49,],[7,7,-3,-4,-5,-6,-2,15,15,15,24,15,-7,15,15,15,15,15,-8,-11,-12,-13,-9,-10,]),'ESCREVER':([0,2,3,4,5,6,10,25,34,35,45,46,47,49,],[8,8,-3,-4,-5,-6,-2,-7,-8,-11,-12,-13,-9,-10,]),'READ':([0,2,3,4,5,6,10,25,34,35,45,46,47,49,],[9,9,-3,-4,-5,-6,-2,-7,-8,-11,-12,-13,-9,-10,]),'$end':([1,2,3,4,5,6,10,25,34,35,45,46,47,49,],[0,-1,-3,-4,-5,-6,-2,-7,-8,-11,-12,-13,-9,-10,]),'EQUALS':([7,],[11,]),'COLON_EQUALS':([7,],[12,]),'LPAREN':([8,9,11,12,13,17,18,19,26,27,28,29,30,],[13,14,18,18,18,31,18,33,18,18,18,18,18,]),'ENTRADA':([11,],[17,]),'ALEATORIO':([11,],[19,]),'NUMERO':([11,12,13,18,26,27,28,29,30,33,],[20,20,20,20,20,20,20,20,20,44,]),'STRING':([11,12,13,18,26,27,28,29,30,],[21,21,21,21,21,21,21,21,21,]),'SEMICOLON':([15,16,20,21,22,35,36,37,38,39,40,41,42,43,48,],[-22,25,-20,-21,34,45,46,-14,-15,-16,-17,-18,47,-19,49,]),'PLUS':([15,16,20,21,22,23,32,37,38,39,40,41,43,],[-22,26,-20,-21,26,26,26,-14,-15,-16,-17,-18,-19,]),'MINUS':([15,16,20,21,22,23,32,37,38,39,40,41,43,],[-22,27,-20,-21,27,27,27,-14,-15,-16,-17,-18,-19,]),'TIMES':([15,16,20,21,22,23,32,37,38,39,40,41,43,],[-22,28,-20,-21,28,28,28,28,28,-16,-17,-18,-19,]),'DIVIDE':([15,16,20,21,22,23,32,37,38,39,40,41,43,],[-22,29,-20,-21,29,29,29,29,29,-16,-17,-18,-19,]),'CONCAT':([15,16,20,21,22,23,32,37,38,39,40,41,43,],[-22,30,-20,-21,30,30,30,30,30,30,30,-18,-19,]),'RPAREN':([15,20,21,23,24,31,32,37,38,39,40,41,43,44,],[-22,-20,-21,35,36,42,43,-14,-15,-16,-17,-18,-19,48,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'statements':([0,],[2,]),'statement':([0,2,],[3,10,]),'assignment_statement':([0,2,],[4,4,]),'print_statement':([0,2,],[5,5,]),'read_statement':([0,2,],[6,6,]),'expression':([11,12,13,17,24,25,26,27,28,],[16,20,21,29,33,34,35,36,37,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statements':([0,],[2,]),'statement':([0,2,],[3,10,]),'assignment_statement':([0,2,],[4,4,]),'print_statement':([0,2,],[5,5,]),'read_statement':([0,2,],[6,6,]),'expression':([11,12,13,18,26,27,28,29,30,],[16,22,23,32,37,38,39,40,41,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,24 +27,26 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> program","S'",1,None,None,None),
-  ('program -> statements','program',1,'p_program','grammar.py',18),
-  ('statements -> statements statement','statements',2,'p_statements_multiple','grammar.py',22),
-  ('statements -> statement','statements',1,'p_statements_single','grammar.py',26),
-  ('statement -> assignment_statement','statement',1,'p_statement','grammar.py',30),
-  ('statement -> print_statement','statement',1,'p_statement','grammar.py',31),
-  ('statement -> read_statement','statement',1,'p_statement','grammar.py',32),
-  ('assignment_statement -> VARIABLE EQUALS expression SEMICOLON','assignment_statement',4,'p_assignment_statement','grammar.py',36),
-  ('assignment_statement -> VARIABLE COLON_EQUALS expression SEMICOLON','assignment_statement',4,'p_assignment_statement','grammar.py',37),
-  ('print_statement -> ESCREVER LPAREN expression RPAREN','print_statement',4,'p_print_statement','grammar.py',42),
-  ('print_statement -> ESCREVER LPAREN expression RPAREN SEMICOLON','print_statement',5,'p_print_statement','grammar.py',43),
-  ('read_statement -> READ LPAREN VARIABLE RPAREN SEMICOLON','read_statement',5,'p_read_statement','grammar.py',48),
-  ('expression -> expression PLUS expression','expression',3,'p_expression_binop','grammar.py',54),
-  ('expression -> expression MINUS expression','expression',3,'p_expression_binop','grammar.py',55),
-  ('expression -> expression TIMES expression','expression',3,'p_expression_binop','grammar.py',56),
-  ('expression -> expression DIVIDE expression','expression',3,'p_expression_binop','grammar.py',57),
-  ('expression -> expression CONCAT expression','expression',3,'p_expression_binop','grammar.py',58),
-  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','grammar.py',71),
-  ('expression -> NUMERO','expression',1,'p_expression_number','grammar.py',75),
-  ('expression -> STRING','expression',1,'p_expression_string','grammar.py',79),
-  ('expression -> VARIABLE','expression',1,'p_expression_variable','grammar.py',83),
+  ('program -> statements','program',1,'p_program','grammar.py',19),
+  ('statements -> statements statement','statements',2,'p_statements_multiple','grammar.py',23),
+  ('statements -> statement','statements',1,'p_statements_single','grammar.py',27),
+  ('statement -> assignment_statement','statement',1,'p_statement','grammar.py',31),
+  ('statement -> print_statement','statement',1,'p_statement','grammar.py',32),
+  ('statement -> read_statement','statement',1,'p_statement','grammar.py',33),
+  ('assignment_statement -> VARIABLE EQUALS expression SEMICOLON','assignment_statement',4,'p_assignment_statement','grammar.py',37),
+  ('assignment_statement -> VARIABLE COLON_EQUALS expression SEMICOLON','assignment_statement',4,'p_assignment_statement','grammar.py',38),
+  ('assignment_statement -> VARIABLE EQUALS ENTRADA LPAREN RPAREN SEMICOLON','assignment_statement',6,'p_assignment_statement','grammar.py',39),
+  ('assignment_statement -> VARIABLE EQUALS ALEATORIO LPAREN NUMERO RPAREN SEMICOLON','assignment_statement',7,'p_assignment_statement','grammar.py',40),
+  ('print_statement -> ESCREVER LPAREN expression RPAREN','print_statement',4,'p_print_statement','grammar.py',54),
+  ('print_statement -> ESCREVER LPAREN expression RPAREN SEMICOLON','print_statement',5,'p_print_statement','grammar.py',55),
+  ('read_statement -> READ LPAREN VARIABLE RPAREN SEMICOLON','read_statement',5,'p_read_statement','grammar.py',71),
+  ('expression -> expression PLUS expression','expression',3,'p_expression_binop','grammar.py',77),
+  ('expression -> expression MINUS expression','expression',3,'p_expression_binop','grammar.py',78),
+  ('expression -> expression TIMES expression','expression',3,'p_expression_binop','grammar.py',79),
+  ('expression -> expression DIVIDE expression','expression',3,'p_expression_binop','grammar.py',80),
+  ('expression -> expression CONCAT expression','expression',3,'p_expression_binop','grammar.py',81),
+  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','grammar.py',94),
+  ('expression -> NUMERO','expression',1,'p_expression_number','grammar.py',98),
+  ('expression -> STRING','expression',1,'p_expression_string','grammar.py',102),
+  ('expression -> VARIABLE','expression',1,'p_expression_variable','grammar.py',106),
 ]
