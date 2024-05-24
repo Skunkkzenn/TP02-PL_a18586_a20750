@@ -54,6 +54,14 @@ def t_READ(t):
     r'READ'
     return t
 
+def t_ENTRADA(t):
+    r'ENTRADA'
+    return t
+
+def t_ALEATORIO(t):
+    r'ALEATORIO'
+    return t
+
 def t_NUMERO(t):
     r'\d+'
     t.value = int(t.value)
