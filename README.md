@@ -34,9 +34,12 @@ Olá, ESI
 Variáveis finais: {'curso': 'ESI'}
 
 py .\master.py .\testingFiles\exemplo-B-02.fca
-Result: Olá, EST IPCA!
+Result:
+Olá, EST IPCA!
 Variáveis finais: {'escola': 'EST', 'inst': 'IPCA'}
 
-
+py .\master.py .\testingFiles\exemplo-B-03.fca
+Result:
+Variáveis finais: {'valor': 'ENTRADA', 'ate10': 'ALEATORIO'}
 ```
 
