@@ -21,6 +21,7 @@ tokens = [
     'ENTRADA',
     'ALEATORIO',
     'FUNCAO',
+    #'FUNCAOLINHA',
     #'STRINGFUNCAO',
     'FIM' # ver se ´r preciso
     #'FECHA_CHAVETAS',
@@ -54,6 +55,7 @@ t_ENTRADA = r'ENTRADA'
 t_ALEATORIO = r'ALEATORIO'
 t_FUNCAO = r'FUNCAO'
 t_FIM = r'FIM'
+#t_FUNCAOLINHA= r''
 #t_STRINGFUNCAO = r'(?!.*\#\{.*\}).+'
 
 def t_NUMERO(t):
