@@ -46,3 +46,8 @@ FUNCAO fib( n ):
 	a + b;
 FIM
 fib5 = fib(5);
+
+
+lista = [ 1, 2, 3 ] ;
+ESCREVER( lista ); -- [1,2,3]
+vazia = [] ;
