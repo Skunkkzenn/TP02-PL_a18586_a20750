@@ -1,5 +1,0 @@
-ESCREVER(valor);   -- conteúdo de valor é apresentado
-ESCREVER(365 * 2); -- 730
-ESCREVER("Ola Mundo"); -- Olá, Mundo!
-curso = "ESI";
-ESCREVER("Olá, "<> curso); -- Olá, ESI

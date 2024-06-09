@@ -1,113 +1,83 @@
-# lexer.py
 import ply.lex as lex
-import codecs
 
-# Lista de tokens
+# Tokens
 tokens = [
-    'ESCREVER',      # print
-    'READ',          # read
-    'NUMERO',        # números
-    'STRING',        # strings
-    'VARIABLE',      # variáveis
-    'LPAREN',        # (
-    'RPAREN',        # )
-    'PLUS',          # +
-    'MINUS',         # -
-    'TIMES',         # *
-    'DIVIDE',        # /
-    'SEMICOLON',     # ;
-    'CONCAT',        # <>
-    'EQUALS',        # =
-    'COLON_EQUALS',  # :=
-    'OPEN_BRACE',    # {
-    'CLOSE_BRACE',   # }
-    'COMMA',         # ,
-    'COLON',         # :
-    'ENTRADA',       # input
-    'ALEATORIO'      # random
+    'VARIAVEL',
+    'NUMERO',
+    'LPAREN', 
+    'RPAREN', 
+    'MAIS',
+    'MENOS',
+    'MULTIPLICA',
+    'DIVIDE',
+    'IGUAL',
+    'PONTOVIRGULA',
+    'VIRGULA',
+    'ESCREVER',
+    'DOISPONTOS',
+    'CONCATENACAO',
+    'STRING',
+    'STRINGESPECIAL',
+    'ENTRADA',
+    'ALEATORIO',
+    'FUNCAO',
+    'FIM'
 ]
 
-# Ignorar espaços em branco e tabulações
 t_ignore = ' \t\n'
 
-# Definições de expressões regulares para tokens simples
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
-t_PLUS = r'\+'
-t_MINUS = r'-'
-t_TIMES = r'\*'
+t_MAIS = r'\+'
+t_MENOS = r'-'
+t_MULTIPLICA = r'\*'
 t_DIVIDE = r'/'
-t_SEMICOLON = r';'
-t_CONCAT = r'<>'
-t_EQUALS = r'='
-t_OPEN_BRACE = r'{'
-t_CLOSE_BRACE = r'}'
-t_COMMA = r','
-t_COLON = r':'
-t_COLON_EQUALS = r':='
-
-def t_ESCREVER(t):
-    r'ESCREVER'
-    return t
-
-def t_READ(t):
-    r'READ'
-    return t
-
-def t_ENTRADA(t):
-    r'ENTRADA'
-    return t
-
-def t_ALEATORIO(t):
-    r'ALEATORIO'
-    return t
+t_IGUAL = r'='
+t_PONTOVIRGULA = r';'
+t_VIRGULA = r','
+t_DOISPONTOS = r':'
+t_ESCREVER = r'ESCREVER'
+t_CONCATENACAO = r'<>'
+#t_STRING = r'\".*?\"|\'[^\']*\''
+t_STRING = r'[\"\'](?!.*\#\{.*\}).*[\"\']'
+# ATENCAO que é possivel fazer "...' 
+#[\"\'] OU "" ou ''
+#(?!.*#{.*}).* tudo menos a ordem ...#{...}...
+t_STRINGESPECIAL = r'[\"\'].*\#\{.+\}.*[\"\']'
+t_ENTRADA = r'ENTRADA'
+t_ALEATORIO = r'ALEATORIO'
+t_FUNCAO = r'FUNCAO'
+t_FIM = r'FIM'
 
 def t_NUMERO(t):
-    r'\d+'
+    r'\d+'  # Usa uma raw string aqui
     t.value = int(t.value)
     return t
 
-def t_STRING(t):
-    r'"([^\\"]|\\[\\"]|\\[uU][0-9a-fA-F]{4})*"'
-    t.value = codecs.escape_decode(t.value[1:-1].encode())[0].decode('utf-8')
-    return t
-
 # Regra de expressão regular para variáveis
-def t_VARIABLE(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*[\?\!]?|[^\x00-\x7F]+'
+def t_VARIAVEL(t):
+    r'[a-z_][a-zA-Z0-9_]*[?!]*' 
     return t
 
+#Nao é necessario adicionar no token list
 # Regra para comentários
-def t_COMMENT(t):
-    r'\-\-.*'
+def t_COMENTARIOS(t):
+    r'--.*'
     pass  # Ignorar o comentário
 
 # Regra para comentários de múltiplas linhas
-def t_multiline_comment(t):
-    r'\{\-([^{}]*|(\{[^{}]*\}))*\-\}'
+def t_INICIO_COMENTARIOS(t):
+    r'{-.*'
     pass  # Ignorar o comentário
 
-# Regra de tratamento de erro
+def t_FIM_COMENTARIOS(t):
+    r'.*-}'
+    pass  # Ignorar o comentário
+
 def t_error(t):
-    print("Caractere incorreto: '%s'" % t.value[0])
+    print(f"Caractere ilegal: {t.value[0]}")
     t.lexer.skip(1)
 
-# Construção do lexer
 lexer = lex.lex()
 
-# Função para imprimir tokens
-def print_tokens(code):
-    lexer.input(code)
-    for token in lexer:
-        print(token)
 
-if __name__ == '__main__':
-    # Teste para imprimir tokens
-    code = '''
-    tmp_01 := 2*3+4 ;
-    a1_ := 12345 - (5191 * 15) ;
-    idade_valida? := 1;
-    mult_3! := a1_ * 3 ;
-    '''
-    print("Tokens:")
-    print_tokens(code)
