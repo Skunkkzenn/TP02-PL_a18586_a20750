@@ -1,0 +1,48 @@
+tmp_01 = 2*3+4 ;
+a1_ = 12345 - (5191 * 15) ;
+idade_valida? = 1;
+mult_3! = a1_ * 3 ;
+ESCREVER(valor);   -- conteúdo de valor é apresentado
+ESCREVER(365 * 2); -- 730
+ESCREVER("Ola Mundo"); -- Olá, Mundo!
+curso = "ESI";
+ESCREVER("Olá, "<> curso); -- Olá, ESI
+{- exemplo interpolação de strings
+   Olá, EST IPCA! -}
+escola ="EST";
+inst = "IPCA";
+ESCREVER ("Olá, #{escola} #{inst}!");
+valor = ENTRADA();
+ate10 = ALEATORIO(10);
+
+FUNCAO soma(a,b),: a+b ;
+FUNCAO soma2(c) :
+	c = c+1 ;
+	c+1 ;
+FIM
+seis = soma(4,2);
+oito = soma2(seis);
+
+FUNCAO area_retangulo(a, b):
+	a * b;
+FIM
+FUNCAO area_quadrado(a):
+	area_retangulo(a, a);
+FIM
+ab = area_retangulo(10, 20);
+ba = area_quadrado(30);
+
+FUNCAO area(a,b),: a*b ;
+FUNCAO area(c),: area(c, c);
+d = area(10, 20);
+e = area(30);
+
+
+FUNCAO fib( 0 ),: 0 ;
+FUNCAO fib( 1 ),: 0 ;
+FUNCAO fib( n ):
+	a = fib(n-1);
+	b = fib(n-2);
+	a + b;
+FIM
+fib5 = fib(5);

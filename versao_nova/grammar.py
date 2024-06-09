@@ -1,25 +1,25 @@
 import ply.yacc as yacc
 from lexer import tokens
 
-# Variáveis para armazenar valores
+# Dicionarios para armazenar variaveis
 variaveis : dict = {} 
 funcoes : dict =  {}
+funcoes_aux_ramos : dict =  {} 
 
-# Ordem operacoes
+# Ordem das operacoes
 precedence = (
     ('left', 'MAIS', 'MENOS'),
     ('left', 'MULTIPLICA', 'DIVIDE'),
 )
+
+# Regras para o parser 
 def p_inicio(p):
     'S : comandos'
     p[0] = p[1]
-    #print(p[1])
 
 def p_comandos_multiplos(p):
     'comandos : comandos comando'
     p[0] = p[1] + [p[2]]
-    #print(p[1])
-    #print(p[2])
 
 def p_comandos_unico(p):
     'comandos : comando'
@@ -30,22 +30,10 @@ def p_comando(p):
                | comando_escrever
                | comando_funcao'''
     p[0] = p[1]
-    #p[0] = p[1]
-#def p_comandos_unico(p):
-#    '''comando : comando
-#                | decl_variavel'''
- #   p[0] = [p[1]]
- #   print(p[1])
-# Parser rules
-#def p_inicio(p):
-#    '''S : comando
-#         | decl_variavel'''
-#    p[0] = p[1]
 
 def p_comando_escrever(p):
     '''comando_escrever : ESCREVER LPAREN expressao RPAREN PONTOVIRGULA
                         | ESCREVER LPAREN decl_variavel RPAREN PONTOVIRGULA'''        
-    
     if p[1] == "ESCREVER":
         p[0] = p[3]
         if p[3] in variaveis.keys():
@@ -53,13 +41,26 @@ def p_comando_escrever(p):
         print(p[3])
 
 def p_comando_funcao(p):
-    '''comando_funcao : FUNCAO VARIAVEL LPAREN parametros RPAREN VIRGULA DOISPONTOS comando 
-                      | FUNCAO VARIAVEL LPAREN parametros RPAREN DOISPONTOS corpo FIM'''
+    '''comando_funcao : FUNCAO VARIAVEL LPAREN parametros RPAREN VIRGULA DOISPONTOS decl_variavel 
+                      | FUNCAO VARIAVEL LPAREN parametros RPAREN VIRGULA DOISPONTOS decl_variaveis_funcoes
+                      | FUNCAO VARIAVEL LPAREN parametros RPAREN DOISPONTOS corpo FIM''' 
+    #Alterado "comando" por "decl_variavel" (pq nao é para haver prints nas funcoes)
     if p[8] != "FIM" :
-        variaveis[p[2]] = (p[4], p[8])
+        if p[2] in variaveis:
+            # Se a chave existir, juntar
+            variaveis[p[2]].append((p[4], p[8]))
+        else:
+            # Se a chave não existir, criar
+            variaveis[p[2]] = [(p[4], p[8])]
+
     elif p[8] == "FIM":
-        variaveis[p[2]] = (p[4], p[7]) 
-    #p[0] = p[1]     funcao_nome 
+        if p[2] in variaveis:
+            # Se a chave existir, juntar
+            variaveis[p[2]].append((p[4], p[7]))
+        else:
+            # Se a chave não existir, criar
+            variaveis[p[2]] = [(p[4], p[7])]     
+    
 def p_parametros(p):
     '''parametros : parametro
                   | parametro VIRGULA parametros'''
@@ -82,9 +83,9 @@ def p_corpo(p):
 
 def p_funcoes(p):
     '''funcoes : decl_variaveis_funcoes'''
-    p[0] = p[1]
     #Removido comando_escrever no enunciado diz para nao usar
-
+    p[0] = p[1]
+    
 def p_decl_variaveis_funcoes(p):
     '''decl_variaveis_funcoes : VARIAVEL IGUAL expressao PONTOVIRGULA
                               | expressao PONTOVIRGULA
@@ -98,13 +99,9 @@ def p_decl_variaveis_funcoes(p):
         aleatorio = random.randrange(p[5])
         variaveis[p[1]] = aleatorio
     elif len(p) == 8 and p[3] != "ALEATORIO":
-        #p[0] = p[3]
-        func_name = p[3]
-        args = p[5]
-        
-        ################variaveis[p[1]] = (p[3], p[5]) 
-        #resultado  = evaluate_function_call(func_name, args)  
-        #variaveis[p[1]] = resultado
+        my_string = ', '.join(p[5])
+        p[0] = p[1]+p[2]+p[3]+p[4]+my_string+p[6]
+        funcoes[p[1]] = p[3]+p[4]+my_string+p[6]
     elif len(p) == 6:
         my_string = ', '.join(p[3])
         p[0] = p[1]+p[2]+my_string+p[4]
@@ -121,7 +118,7 @@ def p_decl_variavel(p):
     if len(p) == 3:
         p[0] = p[1]
     elif p[3] == "ENTRADA":
-        #print("TESTE")
+
         user_input = input()
         variaveis[p[1]] = user_input
     elif p[3] == "ALEATORIO":
@@ -129,87 +126,205 @@ def p_decl_variavel(p):
         aleatorio = random.randrange(p[5])
         variaveis[p[1]] = aleatorio
     elif len(p) == 8 and p[3] != "ALEATORIO":
-        #p[0] = p[3]
+
         func_name = p[3]
         args = p[5]
         
-        ################variaveis[p[1]] = (p[3], p[5]) 
-        resultado  = evaluate_function_call(func_name, args)  
-        variaveis[p[1]] = resultado
+        #Chama a funcao
+        resultado  = chamarfuncao(func_name, args)  
+        variaveis[p[1]] = resultado 
     else:
 
         p[0] = p[3]
         variaveis[p[1]] = p[3]
-    
+
+def chamarfuncao(func_name, args):
+
+    if func_name in variaveis:
+        previous_length = None
+        contador = 0 
+        valido = False
+        for params, expression in variaveis[func_name]:   
+            contador = contador +1
+            current_length = len(params)                  
+            if contador != 1 and previous_length != current_length:
+                valido = True
+            previous_length = current_length       
+        if contador == 1 or valido:
+            r = evaluate_function_call (func_name, args) 
+            return r
+        else:
+            r = funcao_ramos(func_name, args) 
+            return r
+
+def funcao_ramos(func_name, args):
+    import re
+    if func_name in funcoes:
+        if args not in funcoes[func_name]:
+            funcoes[func_name].append(args)
+        else:
+            funcoes[func_name].append(args)
+    else:
+        funcoes[func_name] = [args]
+    if func_name in variaveis:
+        for params, expression in variaveis[func_name]:
+            numero = None 
+            if params != args:
+                param_dict = {params[i]: args[i] for i in range(len(params))}
+                if isinstance(expression, list): #Entre ser apenas uma expressao ou uma lista de expressoes
+                    pattern = r'\(.+\)'  #para encontrar o que esta dentro das (,) os parametros
+                    patternVariavel = r'^(.*?)=' #para encontrar tudo antes do (...) 
+                    patternParenteses = r'\(|\)'      
+                    for item in expression:
+                        matches = re.findall(pattern, item)
+                        parametros = ', '.join(matches)
+                        if "aux" not in funcoes_aux_ramos:
+                            funcoes_aux_ramos["aux"] = []
+                        if parametros  not in funcoes_aux_ramos["aux"]  :        
+                                                   
+                            matchesNome = re.findall(patternVariavel, item)                           
+                            my_string = ', '.join(matchesNome)
+                            if matches:                                                                 
+                                for param, arg in param_dict.items():
+                                    result = re.sub(param,  str(arg), str(parametros)) 
+                                    #item = matches.replace(param, str(arg) )                                    
+                                result = re.sub(patternParenteses, '', result) # para remover os parenteses  
+                                numero = eval(result)
+                                result =[numero]
+                                
+                                funcoes_aux_ramos[my_string] = numero
+                                numero = chamarfuncao(func_name,result)
+                                                        
+            else:
+                                
+                chaves_comuns = set(funcoes.keys()) & set(funcoes_aux_ramos.keys())
+                equals_count = 0
+
+                # Para contar quantas é que tem o "="
+                for params, e in variaveis[func_name]:
+                    if isinstance(e, int):
+                        continue
+                    for exp in e:
+                        # Percorre cada posição na expressão
+                        for char in exp:
+                            # Se o caractere for '=', incrementa o contador
+                            if char == '=':
+                                equals_count += 1
+                                                
+
+                if len(chaves_comuns) != equals_count:
+                    for chave in chaves_comuns:
+                        if "chave" in funcoes_aux_ramos:
+                            funcoes_aux_ramos["chave"].append(chave)
+                        else:
+                            funcoes_aux_ramos["chave"] = [chave] 
+                                                
+                        # Para igualar os valores das chaves
+                        funcoes_aux_ramos[chave] = expression    
+                        funcoes_aux_ramos["aux"] = funcoes[chave]
+                    args = next(iter(funcoes[func_name]))
+                else:
+                    for chave in chaves_comuns:
+                        if chave not in funcoes_aux_ramos["chave"]:
+                            funcoes_aux_ramos[chave] = expression
+                    break
+                
+        #Para a exresssao a+b
+        for params, e in variaveis[func_name]:
+            if isinstance(e, int):
+                continue
+            for exp in e:
+                if '='  in exp:
+                   continue
+
+                letras_encontradas = re.findall(r'\b[a-zA-Z]\b', exp)
+                for letra in letras_encontradas:
+                    if letra in funcoes_aux_ramos:
+                        valor = funcoes_aux_ramos[letra]
+                        exp = exp.replace(letra, str(valor))
+            res = exp
+            return eval(res) 
+                   
 def evaluate_function_call(func_name, args):
     import re
     if func_name in variaveis:
-        params, expression = variaveis[func_name]
-        if len(params) != len(args):
-            raise ValueError("Parameter count mismatch")
-        # Create a dictionary for parameter substitution
-        param_dict = {params[i]: args[i] for i in range(len(params))}
-        #if isinstance(expression, dict):
-        if isinstance(expression, list): #Entre ser apenas uma expressao ou uma lista de expressoes
-            expression_funcao = ""
-            numero = None  #Colocar em baixo casos possiveis
-            pattern = r'\(.+\)'  #para encontrar o que esta dentro das (,) os parametros
-            patternNome = r'^\w+(?=\()' #para encontrar tudo antes do (...) 
-            #patternParenteses = r'[^\(\)]+' # pattern para remover os parenteses    
-            patternParenteses = r'\(|\)'      
-            for item in expression:
-                matches = re.findall(pattern, item)
-                matchesNome = re.findall(patternNome, item)
-                if "=" in item:
-                    for chave, valor in funcoes.items():
-                        resultado = chave + '=' + valor
-                        if resultado == item:
-                            for param, arg in param_dict.items():
-                                expression_funcao = valor.replace(param, str(arg))
-                                numero = eval(expression_funcao)
-                            #expressao_funcao = eval(funcoes[chave])
-                               
-                elif matches:                   
-                    parametros = ', '.join(matches)
-                    nome_funcao = ', '.join(matchesNome)                     
-                    for param, arg in param_dict.items():
-                        result = re.sub(param,  str(arg), str(parametros)) 
-                        #item = matches.replace(param, str(arg) )
-                        print(result)
-                    result = re.sub(patternParenteses, '', result) # para remover os parenteses  
-                    result = result.split(',')
-                    #result = re.sub(pattern,  result, item)  ver se é preciso mas acho que nao 
-                    r = evaluate_function_call(nome_funcao, result)
-                    
-                    return r
-                    
-                    
-                    #fazer coisas: e chamar novamente a funcao....
-                else:
-                    if numero != None:                     
-                        for param, arg in param_dict.items():
-                            expression_funcao = item.replace(param, str(numero))
-                            print(expression_funcao)
-                    else:
-                        for param, arg in param_dict.items():
-                            item = item.replace(param, str(arg) )
-                            print(item)
-                        return eval(item)
-            return eval(expression_funcao)
+        for params, expression in variaveis[func_name]:           
+            if len(params) == len(args):
+                    param_dict = {params[i]: args[i] for i in range(len(params))}
+                    if isinstance(expression, list): #Entre ser apenas uma expressao ou uma lista de expressoes
+                        expression_funcao = ""
+                        numero = None  #Colocar em baixo casos possiveis
+                        pattern = r'\(.+\)'  #para encontrar o que esta dentro das (,) os parametros
+                        patternNome = r'^\w+(?=\()' #para encontrar tudo antes do (...) 
+                        patternParenteses = r'\(|\)'      # pattern para remover os parenteses  
+                        for item in expression:
+                            matches = re.findall(pattern, item)
+                            matchesNome = re.findall(patternNome, item)
+                            if "=" in item:
+                                for chave, valor in funcoes.items():
+                                    resultado = chave + '=' + valor
+                                    if resultado == item:
+                                        for param, arg in param_dict.items():
+                                            expression_funcao = valor.replace(param, str(arg))
+                                            try:
+                                                numero = eval(expression_funcao)
+                                            except:
+                                                numero = expression_funcao                                           
+                                        
+                            elif matches:                   
+                                parametros = ', '.join(matches)
+                                nome_funcao = ', '.join(matchesNome)                     
+                                for param, arg in param_dict.items():
+                                    result = re.sub(param,  str(arg), str(parametros)) 
+                                    #item = matches.replace(param, str(arg) )
+                                result = re.sub(patternParenteses, '', result) # para remover os parenteses  
+                                result = result.split(',')
+                                #result = re.sub(pattern,  result, item)  ver se é preciso mas acho que nao 
+                                r = evaluate_function_call(nome_funcao, result)
+                                
+                                return r
+                                
+                                
+                            else:
+                                if numero != None:                     
+                                    for param, arg in param_dict.items():
+                                        expression_funcao = item.replace(param, str(numero))
+                                else:
+                                    for param, arg in param_dict.items():
+                                        item = item.replace(param, str(arg) )
+                                    return eval(item)
+                        
+                        
+                        return eval(expression_funcao)
 
-        else:
-            for param, arg in param_dict.items():
-                expression = expression.replace(param, str(arg))
-                print(expression)
-            # Evaluate the expression
-            return eval(expression)        
-    
-            
-            #c = eval(d['c'])
-            
-            #var =
-            # Replace parameters in the expression
-            
+                    else:
+                        expression_funcao = ""
+                        numero = None  #Colocar em baixo casos possiveis
+                        pattern = r'\(.+\)'  #para encontrar o que esta dentro dos (,) os parametros
+                        patternNome = r'^\w+(?=\()' #para encontrar tudo antes do (...) 
+                        #patternParenteses = r'[^\(\)]+' # pattern para remover os parenteses    
+                        patternParenteses = r'\(|\)'     
+                        matches = re.findall(pattern, expression)
+                        matchesNome = re.findall(patternNome, expression)
+                        #para FUNCAO area(c),: area(c, c);  EM BAIXO DO IF
+                        if matches:                   
+                                parametros = ', '.join(matches)
+                                nome_funcao = ', '.join(matchesNome)                     
+                                for param, arg in param_dict.items():
+                                    result = re.sub(param,  str(arg), str(parametros)) 
+                                    #item = matches.replace(param, str(arg) )
+                                result = re.sub(patternParenteses, '', result) # para remover os parenteses  
+                                result = result.split(',')
+                                #result = re.sub(pattern,  result, item)  ver se é preciso mas acho que nao 
+                                r = evaluate_function_call(nome_funcao, result)                            
+                                return r
+                        else:
+                            for param, arg in param_dict.items():
+                                expression = expression.replace(param, str(arg))
+                            # Evaluate the expression
+                            return eval(expression)        
+                                        
+                
     else:
         raise NameError(f"Function '{func_name}' is not defined")
 
@@ -219,10 +334,9 @@ def p_expressao_aritmetica(p):
                  | expressao MULTIPLICA expressao
                  | expressao DIVIDE expressao
                  | expressao CONCATENACAO expressao'''
-    if isinstance(p[1], str) or isinstance(p[3], str):   #and nao para a funcao soma2
+    if isinstance(p[1], str) or isinstance(p[3], str):   #Basta 1 para converter tudo em string
         if p[2] == '+':
             p[0] = str(p[1]) + str("+")+ str(p[3])
-            #print(p[0])
         elif p[2] == '-':
             p[0] = str(p[1]) + str("-") + str(p[3])
         elif p[2] == '*':
@@ -237,15 +351,12 @@ def p_expressao_aritmetica(p):
         elif p[2] == '-':
             p[0] = p[1] - p[3]
         elif p[2] == '*':
-            #print(p[1])
-            #print(p[3])
             p[0] = p[1] * p[3]
         elif p[2] == '/':
             p[0] = p[1] / p[3]
         elif p[2] == '<>':
             p[0] = str(p[1]) + str(p[3])
     
-
 def p_expressao_parentheses(p):
     'expressao : LPAREN expressao RPAREN'
     p[0] = p[2]
@@ -253,7 +364,6 @@ def p_expressao_parentheses(p):
 def p_expressao_numero(p):
     'expressao : NUMERO'
     p[0] = p[1]
-
 
 def p_expressao_variavel(p):
     'expressao : VARIAVEL'
@@ -281,30 +391,14 @@ def p_error(p):
     if p:
         print("Erro sintático na posição: ", p.lexpos)
     #elif p == None:
-        #print("") removido porque ha frases que nao tenham p (caso dos comentarios)
+        #print("") removido porque ha frases que nao têm p (caso dos comentarios)
 
     #else:
         #print("Erro sintático!")
-
+      
+# Construção do parser
 parser = yacc.yacc()
 
-input_terminal = 'tmp_01 = 2*3+4 ;\na1_ = 12345 - (5191 * 15) ;\nidade_valida? = 1;\nmult_3! = a1_ * 3 ;\nvalor = 5;\nESCREVER(valor);   -- conteúdo de valor é apresentado\nESCREVER(365 * 2); -- 730\nESCREVER("Ola Mundo"); -- Olá, Mundo!\ncurso = "ESI";\nESCREVER("Olá, "<> curso); -- Olá, ESI\n{- exemplo interpolação de strings\n   Olá, EST IPCA! -}\nescola ="EST";\ninst = "IPCA";\nESCREVER ("Olá, #{escola} #{inst}!");\nvalor = ENTRADA();\nate10 = ALEATORIO(10);\nFUNCAO soma(a,b),: a+b ;\nFUNCAO soma2(c) :\nc = c+1 ;\nc+1 ;\nFIM\nseis = soma(4,2);\noito = soma2(seis);\nFUNCAO area_retangulo(a, b):\na * b;\nFIM\nFUNCAO area_quadrado(a):\n	area_retangulo(a, a);\nFIM\na = area_retangulo(10, 20);\nb = area_quadrado(30);'
-
-    
-    
-    
-result = parser.parse(input_terminal)
-#instructions = input_terminal.strip().split('\n')
-
-#instructions = instructions[:-1]
-
-#for instruction in instructions:
-#    result = parser.parse(instruction)
-    ##print(result)
-
-
-print("Variáveis:", variaveis)
-print("Funcoes", funcoes)
-
-last_var = list(variaveis.keys())[-1]
-print(f"Última variável atribuída: {last_var} = {variaveis[last_var]}")
+def parse_code(code):
+    parser.parse(code)
+    return variaveis

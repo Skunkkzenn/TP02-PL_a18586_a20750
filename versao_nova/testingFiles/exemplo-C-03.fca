@@ -1,0 +1,5 @@
+
+FUNCAO area(a,b),: a*b ;
+FUNCAO area(c),: area(c, c);
+d = area(10, 20);
+e = area(30);

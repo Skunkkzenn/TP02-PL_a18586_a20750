@@ -21,15 +21,10 @@ tokens = [
     'ENTRADA',
     'ALEATORIO',
     'FUNCAO',
-    #'FUNCAOLINHA',
-    #'STRINGFUNCAO',
-    'FIM' # ver se ´r preciso
-    #'FECHA_CHAVETAS',
-    #'ABRE_CHAVETAS',
+    'FIM'
 ]
 
 t_ignore = ' \t\n'
-
 
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
@@ -43,8 +38,6 @@ t_VIRGULA = r','
 t_DOISPONTOS = r':'
 t_ESCREVER = r'ESCREVER'
 t_CONCATENACAO = r'<>'
-#t_ABRE_CHAVETAS = r'{'
-#t_FECHA_CHAVETAS = r'}'
 #t_STRING = r'\".*?\"|\'[^\']*\''
 t_STRING = r'[\"\'](?!.*\#\{.*\}).*[\"\']'
 # ATENCAO que é possivel fazer "...' 
@@ -55,8 +48,6 @@ t_ENTRADA = r'ENTRADA'
 t_ALEATORIO = r'ALEATORIO'
 t_FUNCAO = r'FUNCAO'
 t_FIM = r'FIM'
-#t_FUNCAOLINHA= r''
-#t_STRINGFUNCAO = r'(?!.*\#\{.*\}).+'
 
 def t_NUMERO(t):
     r'\d+'  # Usa uma raw string aqui
