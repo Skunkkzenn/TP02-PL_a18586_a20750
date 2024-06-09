@@ -36,8 +36,13 @@ def p_comando_escrever(p):
                         | ESCREVER LPAREN decl_variavel RPAREN PONTOVIRGULA'''        
     if p[1] == "ESCREVER":
         p[0] = p[3]
-        if p[3] in variaveis.keys():
-            p[0] = variaveis[p[3]]
+        try:
+            if p[3] in variaveis.keys():
+                p[0] = variaveis[p[3]]
+        except:
+            result = ', '.join([str(x) for x in p[3]])
+            if result  in variaveis.keys():
+                p[0] = variaveis[result]    
         print(p[3])
 
 def p_comando_funcao(p):
@@ -114,7 +119,9 @@ def p_decl_variavel(p):
                      | expressao PONTOVIRGULA
                      | VARIAVEL IGUAL ENTRADA LPAREN RPAREN PONTOVIRGULA
                      | VARIAVEL IGUAL ALEATORIO LPAREN expressao RPAREN PONTOVIRGULA
-                     | VARIAVEL IGUAL VARIAVEL LPAREN parametros RPAREN PONTOVIRGULA'''
+                     | VARIAVEL IGUAL VARIAVEL LPAREN parametros RPAREN PONTOVIRGULA
+                     | VARIAVEL IGUAL LBRACKET parametros RBRACKET PONTOVIRGULA
+                     | VARIAVEL IGUAL LBRACKET RBRACKET PONTOVIRGULA'''
     if len(p) == 3:
         p[0] = p[1]
     elif p[3] == "ENTRADA":
@@ -133,6 +140,12 @@ def p_decl_variavel(p):
         #Chama a funcao
         resultado  = chamarfuncao(func_name, args)  
         variaveis[p[1]] = resultado 
+    elif p[3] == "[" and p[5] == "]":
+        p[0] = p[4]
+        variaveis[p[1]] = p[4]
+    elif p[3] == "[" and  p[4] == "]":
+        p[0] = p[4]
+        variaveis[p[1]] = []
     else:
 
         p[0] = p[3]

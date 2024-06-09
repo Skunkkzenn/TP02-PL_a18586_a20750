@@ -21,11 +21,15 @@ tokens = [
     'ENTRADA',
     'ALEATORIO',
     'FUNCAO',
-    'FIM'
+    'FIM',
+    'LBRACKET',
+    'RBRACKET'
 ]
 
 t_ignore = ' \t\n'
 
+t_LBRACKET = r'\['
+t_RBRACKET = r'\]'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_MAIS = r'\+'
